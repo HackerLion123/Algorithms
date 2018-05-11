@@ -1,0 +1,192 @@
+Script started on Mon 14 Nov 2016 03:05:38 PM IST
+bash-3.2$ cat hash.h
+#include<iostream>
+using namespace std;
+struct data
+{
+ int accno;
+ string customer_name;
+ float balance;
+};
+
+class cnode
+{
+ public:
+ data a;
+ cnode *next;
+};
+
+class hashing
+{
+ private:
+  cnode *bucket[10];
+  void display(cnode*);
+ public:
+  cnode* getdata();
+  hashing();
+ ~hashing();
+  void insert(cnode*);
+  void deleteelement(int);
+  void search(int);
+  int hash(int);
+  void makeempty();
+};
+bash-3.2$ cat hash.cpp
+#include"hash.h"
+hashing::hashing()
+{
+ for(int i=0;i<10;i++)
+ {
+	bucket[i]=new cnode;
+  bucket[i]->next=NULL;
+ }
+}
+
+hashing::~hashing()
+{
+ makeempty();
+ delete bucket;
+}
+
+int hashing::hash(int key)
+{
+ return key%10;
+}
+
+void hashing::display(cnode *t)
+{
+ cout<<"----------Details-----------"<<endl;
+ cout<<"Account Number:\t"<<t->a.accno << endl;
+ cout<<"Customer Name:\t"<<t->a.customer_name<<endl;
+ cout<<"Balance:"<<t->a.balance<<endl;
+ cout<<"---------End----------------"<<endl; 
+}
+
+cnode* getdetails()
+{
+ cnode *t;
+ cout<<"Enter the Details"<<endl;
+ cout<<"Account Number:\t";
+ cin>>t->a.accno;
+ cout<<"\nCustomer Name:\t";
+ cin>>t->a.customer_name;
+ cout<<"\nBalance:\t";
+ cin>>t->a.balance;
+ return t;
+}
+
+void hashing::search(int key)
+{
+ int k;
+ k=hash(key);
+ cnode *t;
+ int fl;
+ while(bucket[k]!=NULL)
+ {
+  if(bucket[k]!=NULL)
+  {
+   t=bucket[k];
+   if(t->a.accno==key)
+    break;
+   else
+    t=t->next;
+  }
+  else
+   fl=-1;
+ }
+ if(fl!=-1)
+ {
+  cout<<"Element is found";
+  display(t);
+ }
+} 
+void hashing::makeempty()
+{
+ for(int i=0;i<10;i++)
+  delete bucket[i];
+}
+
+void hashing::insert(cnode* t)
+{
+ int k=hash(t->a.accno);
+ cnode* curr=bucket[k];
+ t->next=curr;
+ bucket[k]=t;
+}
+
+void hashing::deleteelement(int key)
+{
+ int k;
+ k=hash(key);
+ cnode *t;
+ if(bucket[k]!=NULL)
+ {
+  t=bucket[k];
+  if(t->a.accno==key)
+  {
+   bucket[k]=t->next;
+   delete t;
+  }
+  else
+  {
+	 while(t!=NULL)
+   {
+    if(t->a.accno==key)
+     delete t;
+    t=t->next;
+   } 
+  }
+ }
+}
+bash-3.2$ cat hashApp.cpp
+#include"hash.h"
+main()
+{
+ int opt;
+ hashing h;
+ cnode *temp;
+ temp=new cnode;
+ int key;
+ cout<<"--------Option--------"<<endl;
+ cout<<"1]Insert\n2]Delete Element\n3]Search\n4]Makeempty\n5]Exit\n";
+ cout<<"-------Exit----------"<<endl;
+ cout<<"Enter the Option";
+ cin>>opt;
+ do{
+  switch(opt)
+  {
+  case 1:
+  //temp=h.getdata();
+  cout<<"Enter the Details"<<endl;
+  cout<<"Account Number:\t";
+  cin>>temp->a.accno;
+  cout<<"\nCustomer Name:\t";
+  cin>>temp->a.customer_name;
+  cout<<"\nBalance:\t";
+  cin>>temp->a.balance;
+   h.insert(temp);
+   break;
+  case 2:
+   cout<<"Enter the element you want to delete?\t";
+   cin>>key;
+   h.deleteelement(key);
+   break;
+  case 3:
+   cout<<"Enter the the element you wanna find?\t";
+   cin>>key;
+   h.search(key);
+   break;
+  case 4:
+   h.makeempty();
+   break;
+  case 5:
+   cout<<"Thank you"<<endl;
+  default:
+   cout<<"Enter a correct choice";
+  }
+ }while(opt==4);
+}
+bash-3.2$ exit
+exit
+
+Script done on Mon 14 Nov 2016 03:06:03 PM IST

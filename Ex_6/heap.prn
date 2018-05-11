@@ -1,0 +1,301 @@
+Script started on Mon 07 Nov 2016 02:25:17 PM IST
+bash-3.2$ cat heap.h
+#include<iostream>
+using namespace std;
+struct node
+{
+        int accno;
+        string customer_name;
+        float balance;
+};
+class BinHeap
+{
+        private:
+          node *heap;
+          int capacity;
+          int hsize;
+        public:
+          void printData(node a);
+          node getData();
+          int enqueue(node i);
+          int dequeue();
+          node front();
+          int rear();
+          BinHeap(){}
+          BinHeap(int,int);
+          ~BinHeap(){delete[] heap;}
+          int isFull();
+          int isEmpty();
+          void inOrder(int current);
+          node getRoot();
+
+};
+
+bash-3.2$ cat heap.cpp
+#include"heap.h"
+BinHeap::BinHeap(int cap,int x)
+{
+        capacity=cap;
+        hsize=0;
+        heap=new node[capacity+1];
+}
+int BinHeap::enqueue(node i)
+{
+        int current;
+        if(hsize==capacity)
+                return -1;
+        else
+        {
+                current=++hsize;
+                for(;current>1 && i.accno<heap[current/2].accno;current/=2)
+                        heap[current]=heap[current/2];
+        }
+        heap[current]=i;
+
+        return 1;
+}
+node BinHeap::front()
+{
+        return heap[hsize];
+}
+int BinHeap::isFull()
+{
+        return (hsize==capacity);
+}
+int BinHeap::isEmpty()
+{
+        return (hsize==0);
+}
+int BinHeap::dequeue()
+{
+        if(isEmpty())
+                return -1;
+        node lastE=heap[hsize];
+				--hsize;
+        int current=1;
+        node j=heap[current];
+        int child=2;
+	 while(current<=hsize)
+        {
+                if(child<hsize && heap[child].accno>heap[child+1].accno)
+                        child++;
+                if(lastE.accno<=heap[child].accno)
+                       break;
+               heap[current]=heap[child];
+               current=child;
+                child*=2;
+        }
+        printData(j);
+        heap[current]=lastE;
+}
+
+void BinHeap::printData(node node)
+{
+  cout<<"--------------Display----------------------\n";
+  cout<<"Account number:\t\t";
+  cout<<node.accno<<endl;
+  cout<<"\tCustomer Name\t\t\t:\t";
+  cout<<node.customer_name<<endl;
+  cout<<"\tBalance\t\t:\t";
+  cout<<node.balance<<endl;
+  cout<<"------------------End------------------------\n";
+}
+
+node BinHeap::getData()
+{
+  cout<<"******************Enter Details*********************"<<endl;
+  node node;
+  cout<<"Enter the id :\n";
+  cin>>node.accno;
+  cout<<"Enter the customer name:"<<endl;
+  cin>>node.customer_name;
+  cout<<"Enter the balance:\n";
+  cin>>node.balance;
+  return node;	
+  cout<<"************************End**********************"<<endl;
+}
+
+void BinHeap::inOrder(int current=1)
+{
+	if(!isEmpty())
+  {
+  	printData(heap[current++]);
+    inOrder(current);
+  } 
+	else
+			cout<<"Heap is Empty !\n";
+
+}
+node BinHeap::getRoot()
+{
+ return heap[1];
+}
+bash-3.2$ cat heapApp.cpp
+#include"heap.h"
+int main()
+{       int opt;
+        int cap;
+        int x=0;
+        cout<<"Enter capacity\n";
+        cin>>cap;
+        BinHeap b(cap,x);
+        node i;
+        do
+				{
+				cout<<"*************select your option:***************\n\n";
+                cout<<"1.Insert \n";
+                cout<<"2.Deletion\n";
+                cout<<"3.print\n";
+                cout<<"4.Exit\n";
+                
+                cin>>opt;
+                switch(opt)
+                {
+                case 1:
+                {
+                        int j;
+                        i=b.getData();
+                        j=b.enqueue(i);
+                        if(j==-1)
+                                cout<<"\nHeap is full !\n";
+                        else
+                                cout<<"\nInsertion success\n";
+                        break;
+                }
+                case 2:
+                {
+                        int j;
+                       j=b.dequeue();
+                        if(j==-1)
+                                cout<<"\nHeap is empty\n\n";
+                        break;
+                }
+		            case 3:
+                {
+                        int x=1;
+                        cout<<"\nDetails:\n\n";
+                        b.inOrder(x);
+                        break;
+                }
+                case 4:
+                        cout<<"Thank You\n";
+                        break;
+                default:
+                        cout<<"Invalid option\n\n";
+                }
+        }while(opt!=4);
+return 1;
+}
+
+bash-3.2$ cat makefile
+heap:heap.o heapApp.o
+	c++ heap.o heapApp.o -o heap
+heap.o:heap.cpp
+	c++ heap.cpp -c
+heapApp.o:heapApp.cpp
+	c++ heapApp.cpp -c
+
+bash-3.2$ ./heap
+Enter capacity
+3
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+1
+******************Enter Details*********************
+Enter the id :
+1
+Enter the customer name:
+sa
+Enter the balance:
+1000
+
+Insertion success
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+1
+******************Enter Details*********************
+Enter the id :
+2
+Enter the customer name:
+bharath
+Enter the balance:
+39990
+
+Insertion success
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+3
+
+Details:
+
+--------------Display----------------------
+Account number:		1
+	Customer Name			:	sa
+	Balance		:	1000
+------------------End------------------------
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+3
+
+Details:
+
+--------------Display----------------------
+Account number:		1
+	Customer Name			:	sa
+	Balance		:	1000
+------------------End------------------------
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+2
+--------------Display----------------------
+Account number:		1
+	Customer Name			:	sa
+	Balance		:	1000
+------------------End------------------------
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+3
+
+Details:
+
+--------------Display----------------------
+Account number:		2
+	Customer Name			:	bharath
+	Balance		:	39990
+------------------End------------------------
+*************select your option:***************
+
+1.Insert 
+2.Deletion
+3.print
+4.Exit
+4
+Thank You
+bash-3.2$ exit
+exit
+
+Script done on Mon 07 Nov 2016 02:26:39 PM IST

@@ -1,0 +1,419 @@
+Script started on Mon 19 Sep 2016 04:21:46 PM IST
+bash-3.2$ cat c[KStackLList.h
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+class cStackLList
+{
+    int top;
+    int maxSize;
+   public:
+    class cNode
+    {
+     public:
+        cNode *next;
+        int id;
+		string na;
+		int age;
+    };
+    cNode *head;
+        cStackLList(int max);
+        bool push(int,string,int);
+        cNode* pop();
+        void showStack();
+        ~cStackLList();
+        bool isEmpty();
+        bool isFull();
+		cNode* findByRoomNo(int roomno);
+		cNode* findByPosition(int position);
+};
+
+bash-3.2$ cat cStackLList.cpp
+#include"cStackLList.h"
+int main()
+{
+    char ch;
+    int maxsize;
+    int choice;
+    int position;
+    int roomno;
+    string avail;
+    int pay;
+    cStackLList::cNode *t;
+    cout<<endl<<endl;
+    cout<<"Enter the maximum size of the stack"<<endl;
+    cin>>maxsize;
+    OUTmenu:
+    if(maxsize>0)
+    {
+        cStackLList List1(maxsize);
+    menu1:
+    cout<<endl;
+    cout<<"OPTIONS"<<endl;
+    cout<<"  Insert A staffDetail - 1   "<<endl;
+    cout<<"  Delete A staffDetail - 2   "<<endl;
+    cout<<"  Check  for staffde   - 3   "<<endl;
+    cout<<"  Display the List     - 4   "<<endl;
+    cout<<" Exit                 - 5   "<<endl;
+    cout<<"  Enter the Choice : ";
+    cin>>choice;
+    cout<<endl<<endl;
+    switch(choice)
+    {
+    case 1:
+        cout<<endl<<"Enter the staffid : ";
+        cin>>roomno;
+        cout<<endl<<"Enter the name of a staff : ";
+        cin>>avail;
+        cout<<endl<<"Enter the age : ";
+        cin>>pay;
+        if(List1.push(roomno,avail,pay))
+        {
+             cout<<endl<<"The details are inserted successfully"<<endl;
+             List1.showStack();
+        }
+        else
+        {
+            cout<<endl<<"The Stack is FULL"<<endl;
+        }
+        goto menu1;
+    case 2:
+        t=List1.pop();
+        if(t!=NULL)
+        {
+            cout<<endl<<"The details in id "<<t->id<<" are deleted successfully"<<endl;
+            List1.showStack();
+        }
+        else
+        {
+            cout<<endl<<"The Stack is EMPTY "<<endl;
+        }
+        goto menu1;
+    case 3:
+    menu4:
+        cout<<endl;
+        cout<<"Find by   id number - R"<<endl;
+        cout<<"Find by Position    - P"<<endl;
+        cout<<" Enter the choice : ";
+        cin>>ch;
+        cout<<endl;
+        if(ch=='r'||ch=='R')
+        {
+            cout<<"Enter the id number : ";
+            cin>>roomno;
+            t=List1.findByRoomNo(roomno);
+            if(t==NULL)
+            {
+                cout<<"The List is EMPTY Or id number "<<roomno<<" NOT FOUND"<<endl;
+            }
+            else
+            {
+                cout<<"id Number "<<t->id<<endl;
+                cout<<"name "<<t->na<<endl;
+                cout<<"age "<<t->age<<endl;
+            }
+        }
+        else  if(ch=='p'||ch=='P')
+        {
+            cout<<"Enter the Position : ";
+            cin>>position;
+            cout<<endl;
+            t=List1.findByPosition(position);
+            if(t==NULL)
+            {
+                cout<<"The List is EMPTY OR The position value is not valid"<<endl;
+            }
+            else
+            {
+                cout<<"id "<<t->id<<endl;
+                cout<<"name "<<t->na<<endl;
+                cout<<"age "<<t->age<<endl;
+            }
+        }
+        else
+        {
+            cout<<"Enter a valid choice!"<<endl;
+            goto menu4;
+        }
+        goto menu1;
+    case 4:
+        List1.showStack();
+        goto menu1;
+    case 5:
+        
+         exit(0);
+         break;
+    default:
+        cout<<"Enter a valid choice "<<endl;
+        goto menu1;
+    }
+    }
+    else
+    {
+        cout<<"Invalid Size"<<endl;
+        goto OUTmenu;
+    }
+}
+
+bash-3.2$ cat C[KcStackLListImp.cpp
+#include"cStackLList.h"
+cStackLList::cStackLList(int max)
+{
+    head=new cNode;
+    head->next=NULL;
+    top=-1;
+    maxSize=max;
+}
+cStackLList::cNode*  cStackLList::findByPosition(int position)
+{
+    if(head->next==NULL)
+    {
+        return NULL;
+    }
+    if(position>=0&&position<=top)
+    {
+        cNode *temp;
+        temp=head->next;
+        int count=0;
+        while(count<position&&temp->next!=NULL)
+        {
+            count++;
+            temp=temp->next;
+        }
+         return temp;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+cStackLList::cNode*  cStackLList::findByRoomNo(int roomno)
+{
+    if(head->next==NULL)
+    {
+        return NULL;
+    }
+    cNode *temp;
+    temp=new cNode;
+    temp=head->next;
+    while(temp->id!=roomno&&temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    if(temp->id==roomno)
+    {
+     return temp;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+bool cStackLList::push(int roomno,string avail,int ag)
+{
+    if(!isFull())
+    {
+        cNode *node;
+        top++;
+        node=new cNode;
+        if(head->next==NULL)
+        {
+            node->next=NULL;
+            head->next=node;
+            node->id=roomno;
+			node->na=avail;
+			node->age=ag;
+        }
+        else
+        {
+            cNode *temp;
+            temp=new cNode;
+            temp=head->next;
+			node->id=roomno;
+			node->na=avail;
+			node->age=ag;
+            node->next=temp;
+            head->next=node;
+        }
+        return true;
+    }
+    return false;
+}
+cStackLList::cNode*  cStackLList::pop()
+{
+    if(!isEmpty())
+    {
+        
+        cNode *temp,*prev;
+        prev=new cNode;
+        temp=new cNode;
+        temp=head->next;
+        prev=temp;
+        head->next=temp->next;
+        top--;
+        return prev;
+    }
+    return NULL;
+}
+void cStackLList::showStack()
+{
+    if(!isEmpty())
+    {
+        cNode *temp;
+        temp=new cNode;
+        temp=head->next;
+        cout<<endl<<"  id\t\t name\t\t age"<<endl;
+        while(temp!=NULL)
+        {
+            cout<<temp->id<<"\t\t"<<temp->na<<"\t\t"<<temp->age<<endl;
+            temp=temp->next;
+        }
+
+    }
+    else
+    {
+        cout<<"Stack is EMPTY"<<endl;
+    }
+}
+bool cStackLList::isEmpty()
+{
+    if(top==-1)
+    {
+        return true;
+    }
+    return false;
+}
+bool cStackLList::isFull()
+{
+    if(top==maxSize-1)
+    {
+        return true;
+    }
+    return false;
+}
+cStackLList::~cStackLList()
+{
+    delete head;
+}
+
+bash-3.2$ main.x[Kexe
+
+
+Enter the maximum size of the stack
+2
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 1
+
+
+
+Enter the staffid : 21
+
+Enter the name of a staff : ewedw
+
+Enter the age : 23
+
+The details are inserted successfully
+
+  id		 name		 age
+21		ewedw		23
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 1
+
+
+
+Enter the staffid : 321
+
+Enter the name of a staff : ds
+
+Enter the age : 23
+
+The details are inserted successfully
+
+  id		 name		 age
+321		ds		23
+21		ewedw		23
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 1
+
+
+
+Enter the staffid : 21
+
+Enter the name of a staff : ds
+
+Enter the age : 23
+
+The Stack is FULL
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 2
+
+
+
+The details in id 321 are deleted successfully
+
+  id		 name		 age
+21		ewedw		23
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 2
+
+
+
+The details in id 21 are deleted successfully
+Stack is EMPTY
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 2
+
+
+
+The Stack is EMPTY 
+
+OPTIONS
+  Insert A staffDetail - 1   
+  Delete A staffDetail - 2   
+  Check  for staffde   - 3   
+  Display the List     - 4   
+ Exit                 - 5   
+  Enter the Choice : 5
+
+
+bash-3.2$ exit
+exit
+
+Script done on Mon 19 Sep 2016 04:23:28 PM IST

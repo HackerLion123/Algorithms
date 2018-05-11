@@ -1,0 +1,352 @@
+Script started on Mon 19 Sep 2016 02:31:14 PM IST
+bash-3.2$ cat list.h
+#include<iostream>
+using namespace std;
+class Clist
+{
+ class cUser
+ {
+  public:
+   int acc_no; 
+   string customer_name;
+   float balance;
+   string acc_type;
+   string address;
+   cUser *next;
+   cUser(){next=new cUser[0];}
+   ~cUser(){delete next;}
+ };
+ public:
+   cUser *head;
+   Clist();
+  ~Clist(){delete head;}
+   void insert_Front(int no,string n,float bal,string typ,string add);
+   void insert_End(int no,string n,float bal,string typ,string add);
+   void insert_position(int no,string n,float bal,string typ,string add,int pos);
+   int  delete_First();
+   void delete_Last();
+   int  delete_position(int pos);
+   void transverse();
+};
+
+bash-3.2$ cat list_imp.cpp
+#include"list.h"
+Clist::Clist()
+{
+ head=new cUser[6];
+ head->next=NULL;
+}
+void Clist::insert_Front(int no,string n,float bal,string typ,string add)
+{
+  cUser *newnode;
+  cout<<"1";
+  newnode=new cUser[1];
+  newnode->acc_no=no;
+  newnode->customer_name=n;
+  newnode->balance=bal;
+  newnode->acc_type=typ;
+  newnode->address=add;
+  if(head->next==NULL)
+  {
+   head->next=newnode;
+   newnode->next=NULL;
+  }
+  else
+  { 
+   newnode->next=head->next;
+   head->next=newnode;
+  }
+}
+void Clist::insert_End(int no,string n,float bal,string typ,string add)
+{
+ cout<<"2";
+ cUser *newnode,*temp;
+ newnode=new cUser[1];
+ temp=new cUser[1];
+ while(temp->next!=NULL)
+ {
+  temp=temp->next;
+ }
+ newnode->acc_no=no;
+ newnode->customer_name=n;
+ newnode->balance=bal;
+ newnode->acc_type=typ;
+ newnode->address=add;
+ temp=head->next;
+ temp->next=newnode;
+ newnode->next=NULL;
+}
+
+void Clist::insert_position(int no,string n,float bal,string typ,string add,int pos)
+{
+ cout<<"3";
+ cUser *newnode,*temp;
+ temp=new cUser[1];
+ newnode=new cUser[1];
+ newnode->acc_no=no;
+ newnode->customer_name=n;
+ newnode->balance=bal;
+ newnode->acc_type=typ;
+ newnode->address=add;
+ temp=head->next;
+ for(int i=0;i<pos;i++)
+  temp=temp->next;
+ temp->next=newnode;
+ newnode->next=temp->next->next;
+}
+
+void Clist::delete_Last()
+{
+ cout<<"4";
+ cUser *temp,*prev;
+ temp=new cUser[1];
+ prev=new cUser[1];
+ temp=head->next;
+ while(temp->next!=NULL)
+ {
+  prev=temp;
+  temp=temp->next;
+ }
+ prev->next=NULL;
+ delete(temp);
+}
+
+int Clist::delete_position(int pos)
+{
+ cout<<"5";
+ cUser *temp,*prev;
+ temp=new cUser[1];
+ prev=new cUser[1];
+ if(pos<=90)
+ {
+  temp=head->next;
+  for(int i=0;i<pos;i++)
+  {
+   prev=temp;
+   temp=temp->next;
+  }
+  prev->next=prev->next->next;
+  delete(temp);
+ }
+ else
+ {
+  return 1;
+ }
+}
+void Clist::transverse()
+{
+ cout<<"6";
+ cUser *temp;
+ temp=new cUser[1];
+ temp=head->next;
+ while(temp!=NULL)
+ {
+  cout<<"*******Acc-Details***********"<<endl;
+  cout<<"\t\tCustomer name:"<<temp->customer_name<<endl;
+  cout<<"\t\tAccount number:"<<temp->acc_no<<endl;
+  cout<<"\t\taddress:"<<temp->address<<endl;
+  cout<<"\t\tacc_type:"<<temp->acc_type<<endl;
+  cout<<"\t\tBalance:"<<temp->balance<<endl;
+  cout<<"******************************"<<"\n\n";
+  temp=temp->next;
+ }
+}
+int Clist::delete_First()
+{
+ cout<<"7";
+ cUser *temp;
+ temp=new cUser[1];
+ if(head->next!=NULL)
+ {
+  temp=head->next;
+  head->next=head->next->next;
+  delete(temp);
+ }
+ else
+  return 2;
+}
+bash-3.2$ list_app.cpp
+#include"list.h"
+main()
+{
+ int choice,pos,no;
+ string n,typ,add;
+ float bal;
+ Clist obj;
+ b:
+ {
+  cout<<"*************************************************"<<'\n';
+  cout<<"1]insert at front\n2]insert at position\n3]insert at end\n4]delete at first\n5]delete at last\n6]delete by position\n7]Exit";
+  cout<<"*************************************************"<<'\n';
+  cout<<"8";
+  cout<<"Enter ur choice"<<endl;
+  cin>>choice;
+  switch(choice)
+  {
+   case 1:
+    cout<<"Enter the Details"<<endl;
+    cout<<"Enter the account number"<<'\n';
+    cin>>no;
+    cout<<"Enter the customer name"<<'\n';
+    cin>>n;
+    cout<<"Enter the balance amount"<<'\n';
+    cin>>bal;
+    cout<<"Enter the account type"<<'\n';
+    cin>>typ;
+    cout<<"Enter the address"<<'\n';
+    cin>>add;
+    cout<<"9";
+    obj.insert_Front(no,n,bal,typ,add);
+    obj.transverse();
+    goto b;
+    break;
+   case 2:
+    cout<<"Enter the Details"<<endl;
+    cout<<"Enter the account number"<<'\n';
+    cin>>no;
+    cout<<"Enter the customer name"<<'\n';
+    cin>>n;
+    cout<<"Enter the balance amount"<<'\n';
+    cin>>bal;
+    cout<<"Enter the account type"<<'\n';
+    cin>>typ;
+    cout<<"Enter the address"<<'\n';
+    cin>>add;
+    cout<<"Enter the Position to insert"<<endl;
+    cin>>pos;
+    obj.insert_position(no,n,bal,typ,add,pos);
+    obj.transverse();
+    goto b;
+    break;
+   case 3:
+    cout<<"Enter the Details"<<endl;
+    cout<<"Enter the account number"<<'\n';
+    cin>>no;
+    cout<<"Enter the customer name"<<'\n';
+    cin>>n;
+    cout<<"Enter the balance amount"<<'\n';
+    cin>>bal;
+    cout<<"Enter the account type"<<'\n';
+    cin>>typ;
+    cout<<"Enter the address"<<'\n';
+    cin>>add;
+    obj.insert_End(no,n,bal,typ,add);
+    obj.transverse();
+    goto b;
+    break;
+   case 4:
+    obj.delete_First();
+    obj.transverse();
+    goto b;
+    break;
+   case 5:
+    obj.delete_Last();
+    obj.transverse();
+    goto b;
+    break;
+   case 6:
+    cout<<"Enter the Element position"<<'\n';
+    cin>>pos;
+    obj.delete_position(pos);
+    obj.transverse();
+    goto b;
+    break;
+   case 7:
+    cout<<"Thank you"<<'\n';
+    break;
+   default:
+    cout<<"Wrong Choice"<<'\n';
+    goto b;
+    break;
+  }
+ }
+}
+bash-3.2$ cat makefile
+list:list_imp.o list_app.o
+	c++ list_imp.o list_app.o -o list
+list_imp.o:list_imp.cpp
+	c++ -c list_imp.cpp
+list_app.o:list_app.cpp
+	c++ -c list_app.cpp
+bash-3.2$ ./list
+*************************************************
+1]insert at front
+2]insert at position
+3]insert at end
+4]delete at first
+5]delete at last
+6]delete by position
+7]Exit*************************************************
+8Enter ur choice
+1
+Enter the Details
+Enter the account number
+123
+Enter the customer name
+asd
+Enter the balance amount
+312
+Enter the account type
+tr
+Enter the address
+sa
+916*******Acc-Details***********
+		Customer name:asd
+		Account number:123
+		address:sa
+		acc_type:tr
+		Balance:312
+******************************
+
+*************************************************
+1]insert at front
+2]insert at position
+3]insert at end
+4]delete at first
+5]delete at last
+6]delete by position
+7]Exit*************************************************
+8Enter ur choice
+3
+Enter the Details
+Enter the account number
+213
+Enter the customer name
+bfd
+Enter the balance amount
+2133
+Enter the account type
+ads
+Enter the address
+as
+26*******Acc-Details***********
+		Customer name:asd
+		Account number:123
+		address:sa
+		acc_type:tr
+		Balance:312
+******************************
+
+*******Acc-Details***********
+		Customer name:bfd
+		Account number:213
+		address:as
+		acc_type:ads
+		Balance:2133
+******************************
+
+*************************************************
+1]insert at front
+2]insert at position
+3]insert at end
+4]delete at first
+5]delete at last
+6]delete by position
+7]Exit*************************************************
+8Enter ur choice
+4
+Deleted
+bash-3.2$exit
+exit
+
+Script done on Mon 19 Sep 2016 02:33:02 PM IST

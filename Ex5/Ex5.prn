@@ -1,0 +1,368 @@
+Script started on Mon 07 Nov 2016 04:17:30 PM IST
+bash-3.2$ cat avltree.h
+#include<iostream>
+using namespace std;
+#include<string.h>
+struct cnode
+{
+ int acc_no;
+ int height;
+ string customer_name;
+ float balance;
+ cnode* left;
+ cnode* right;
+};
+class Avltree
+{
+ public:
+  Avltree();
+  void makeempty(cnode*);
+  cnode* root;
+  cnode* insert(cnode*,int,string,float);
+  void delete_element(int,cnode*);
+  void postorder(cnode*);
+  void preorder(cnode*);
+  void inorder(cnode*);
+  cnode* single_rotation_with_right_child(cnode*);
+  cnode* double_rotation_with_right_child(cnode*);
+  cnode* single_rotation_with_left_child(cnode*);
+  cnode* double_rotation_with_left_child(cnode*);
+  int findheight(cnode*);
+  cnode* find(int ,cnode*);
+  cnode* findmin(cnode*);
+};
+bash-3.2$ cat avltree.cpp
+#include"avltree.h"
+cnode* Avltree::insert(cnode* t,int no,std::string na,float bal)
+{
+ if(t==NULL)
+{
+  t = new cnode[10];
+  t->acc_no = no;
+  t->customer_name= na;
+  t->balance=bal;
+  t->left = NULL;
+  t->right = NULL;
+  t->height = 0;
+}
+else if(no<t->acc_no)
+{
+ t->left=insert(t->left,no,na,bal);
+ if(findheight(t->left)-findheight(t->right)==2)
+ {
+  if(no<t->left->acc_no)
+   t=single_rotation_with_left_child(t);
+  else
+   t=double_rotation_with_left_child(t);
+}
+}
+else if(no>t->acc_no)
+{
+ t->right=insert(t->right,no,na,bal);
+ if(findheight(t->right)-findheight(t->left)==2)
+ {
+  if(no>t->right->acc_no)
+   t = single_rotation_with_right_child(t);
+  else
+   t = double_rotation_with_right_child(t);
+ }
+}
+ t->height = max(findheight(t->left),findheight(t->right))+1;
+}
+
+void Avltree::makeempty(cnode* t)
+{
+ if(t)
+ {
+  makeempty(t->right);
+  makeempty(t->left);
+  delete t;
+ }
+}
+
+int Avltree::findheight(cnode* t)
+{
+  if(t!=NULL)
+    return t->height;
+  else
+    return -1;
+}
+
+void Avltree::inorder(cnode* t)
+{
+  if(t!=NULL)
+  {
+    inorder(t->left);
+    cout<<"Account Number:\t"<<t->acc_no << endl;
+    cout<<"Customer Name:\t"<<t->customer_name<<endl;
+    cout<<"Balance:"<<t->balance<<endl;
+    inorder(t->right);
+  }
+}
+void Avltree::preorder(cnode* t)
+{
+  if(t!=NULL)
+  {
+    cout<<"Account Number:\t"<<t->acc_no << endl;
+    cout<<"Customer Name:\t"<<t->customer_name<<endl;
+    cout<<"Balance:"<<t->balance<<endl;
+    preorder(t->left);
+    preorder(t->right);
+  }
+}
+
+void Avltree::postorder(cnode* t)
+{
+  if(t!=NULL)
+  {
+    postorder(t->left);
+    postorder(t->right);
+    cout<<"Account Number:\t"<<t->acc_no << endl;
+    cout<<"Customer Name:\t"<<t->customer_name<<endl;
+    cout<<"Balance:"<<t->balance<<endl;
+ }
+}
+
+cnode* Avltree::find(int accno,cnode* t)
+{
+  if(t==NULL)
+    return NULL;
+  if(accno<t->acc_no)
+    return (find(accno,t->left));
+  else if(accno>t->acc_no)
+    return (find(accno,t->right));
+  return t;
+}
+cnode* Avltree::findmin(cnode* t)
+{
+  while(t->left!=NULL)
+    t=t->left;
+  return t;
+}
+
+cnode* Avltree::single_rotation_with_left_child(cnode* k2){
+  cnode* k1 = k2->left;
+  k2->left = k1->right;
+  k1->right = k2;
+  k2->height = max(findheight(k2->left),findheight(k2->right))+1;
+  k1->height = max(findheight(k1->left),k2->height)+1;
+  return k1;
+}
+cnode* Avltree::double_rotation_with_left_child(cnode* k3)
+{
+  k3 = single_rotation_with_right_child(k3->left);
+  k3 = single_rotation_with_left_child(k3);
+  return k3;
+}
+cnode* Avltree::single_rotation_with_right_child(cnode* k2){
+  cnode* k1 = k2->right;
+  k2->right = k1->left;
+  k1->left = k2;
+  k2->height = max(findheight(k2->left),findheight(k2->right))+1;
+  k1->height = max(findheight(k1->right),k2->height)+1;
+  return k1;
+}
+cnode* Avltree::double_rotation_with_right_child(cnode* k3)
+{
+  k3 = single_rotation_with_left_child(k3->left);
+  k3 = single_rotation_with_right_child(k3);
+  return k3;
+}
+Avltree::Avltree()
+{
+  root = NULL;
+}
+bash-3.2$ cat app.cpp
+#include"avltree.h"
+main()
+{
+ int choice;
+ int accno;
+ string cusname;
+ float bal;
+ Avltree t;
+ cnode *cur,*cur1,*cur2,*cur3;
+ do{
+   try{
+      cout << "\t\t\t-Options-\t\t\t" << endl;
+      cout << "1.Insert"<<endl;
+      cout<<"2.Search\n3.Find Min\n5.Inorder Travere\n6.Preorder traverse \n7.Postorder traverse\n8.Make Empty\n9.Exit" << endl;
+      cout << "Enter Your Option" << endl;
+      cin >> choice;
+      if(choice<1||choice>9)
+        throw 1;
+      else
+       switch(choice){
+         case 1:
+          cur = new cnode();
+          do{
+            try{
+             cout << "Enter The accno:\t";
+             cin >> accno;
+             if(accno<1)
+              throw 1;
+            }
+            catch(int ele){
+             cerr << "Account number must Be Positive" << endl;
+            }
+            }while(accno<1);
+              cout<<"customer name:\t";
+              cin>>cusname;
+              cout<<"Balance:\t";
+              cin>>bal;
+              cout<<endl;
+              cur = t.find(accno,t.root);
+              if(cur==NULL){
+                t.root=t.insert(t.root,accno,cusname,bal);
+                cout<<"Node is inserted\n";
+              }
+              else
+                cout<<"Already present\n";
+              break;
+       case 2:
+              cur1=new cnode();
+              cout<<"Enter The Acc-No:\t";
+              cin>>accno;
+              cout << endl;
+              cur1=t.find(accno,t.root);
+              if(cur1!=NULL){
+                cout<<"Account No:\t"<<cur1->acc_no << endl;;
+                cout<<"Customer Name:\t"<<cur1->customer_name<<endl;
+                cout<<"Balance:\t"<<cur1->balance<<endl;
+              }
+              else
+                cout<<"Element not found\n";
+              break;
+       case 3:
+              cur2=new cnode();
+              if(t.root!=NULL){
+                cur2=t.findmin(t.root);
+                if(cur2!=NULL){
+                  cout<<"Acc no:\t"<<cur2->acc_no << endl;;
+                  cout<<"Customer Name:\t"<<cur2->customer_name<<endl;
+                  cout<<"Balance:\t"<<cur1->balance<<endl;
+                }
+              }
+              else
+              cout<<"Empty Tree\n";
+              break;
+       case 5:
+                 if(t.root!=NULL){
+                   cout<<"Binary Tree In Inorder Is---\n";
+                   t.inorder(t.root);
+                 }
+                 else
+                   cout<<"Empty Tree\n";
+                 break;
+          case 6:
+                 if(t.root!=NULL){
+                   cout<<"Binary Tree In Preorder Is---\n";
+                   t.preorder(t.root);
+                 }
+                 else
+                   cout<<"Empty Tree\n";
+                 break;
+          case 7:
+                 if(t.root!=NULL){
+                   cout<<"Binary Tree In Postorder Is---\n";
+                   t.postorder(t.root);
+                 }
+                 else
+                   cout<<"Empty Tree\n";
+                 break;
+          case 8:
+                 t.makeempty(t.root);
+                 if(t.root==NULL)
+                   cout<<"Tree is Empty\n";
+                 break;
+       }
+    }
+    catch(int){
+      cerr << "Enter Valid Option" << endl;
+    }
+  }while(choice!=9);
+}
+bash-3.2$ cat makefile
+avl:avltree.o app.o
+	c++ -o avl avltree.o app.o
+avltree.o:avltree.cpp
+	c++ -c avltree.cpp
+app.o:app.cpp
+	c++ -c app.cpp
+bash-3.2$ avl
+			-Options-			
+1.Insert
+2.Search
+3.Find Min
+5.Inorder Travere
+6.Preorder traverse 
+7.Postorder traverse
+8.Make Empty
+9.Exit
+Enter Your Option
+1
+Enter The accno:	1
+customer name:	as
+Balance:	123
+
+Node is inserted
+			-Options-			
+1.Insert
+2.Search
+3.Find Min
+5.Inorder Travere
+6.Preorder traverse 
+7.Postorder traverse
+8.Make Empty
+9.Exit
+Enter Your Option
+5
+Binary Tree In Inorder Is---
+Account Number:	1
+Customer Name:	as
+Balance:123
+			-Options-			
+1.Insert
+2.Search
+3.Find Min
+5.Inorder Travere
+6.Preorder traverse 
+7.Postorder traverse
+8.Make Empty
+9.Exit
+Enter Your Option
+6
+Binary Tree In Preorder Is---
+Account Number:	1
+Customer Name:	as
+Balance:123
+			-Options-			
+1.Insert
+2.Search
+3.Find Min
+5.Inorder Travere
+6.Preorder traverse 
+7.Postorder traverse
+8.Make Empty
+9.Exit
+Enter Your Option
+7
+Binary Tree In Postorder Is---
+Account Number:	1
+Customer Name:	as
+Balance:123
+			-Options-			
+1.Insert
+2.Search
+3.Find Min
+5.Inorder Travere
+6.Preorder traverse 
+7.Postorder traverse
+8.Make Empty
+9.Exit
+Enter Your Option
+9
+bash-3.2$ exit
+exit
+
+Script done on Mon 07 Nov 2016 04:18:42 PM IST

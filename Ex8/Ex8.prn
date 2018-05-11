@@ -1,0 +1,180 @@
+Script started on Fri 11 Nov 2016 12:40:08 PM IST
+bash-3.2$ cat graph.h
+#include<iostream>
+#include<string.h>
+using namespace std;
+typedef struct vertex
+{
+ string customer_name;
+ int acc_no;
+ float balance;
+}vertex;
+
+class Graph
+{
+ private:
+  vertex *v;
+  bool *visited;
+  int vertexno;
+  int edgeno;
+  int **adjMatrix;
+ public:
+	~Graph();
+  Graph(int,int);
+  void getdata(int);
+  void display(int);
+  void addedge(int,int);
+  void displaymat();
+  void dfs(int);
+}; 
+bash-3.2$ cat graph.cpp
+#include"graph.h"
+void Graph::dfs(int v)
+{
+ display(v);
+ visited[v]=true;
+ for(int i=0;i<vertexno;i++)
+ {
+  if(adjMatrix[v][i]==1)
+  {
+   if(!visited[i]) 
+    dfs(i);
+  }
+ }
+}
+
+Graph::Graph(int vex,int edg){
+  edgeno=edg;
+  vertexno=vex;
+  visited=new bool[vex];
+  v=new vertex[vex];
+ for(int i=0;i<vex;i++)
+   visited[i]=false;
+	cout<<"Hey\n";
+	adjMatrix=new int*[++vex];
+	for(int i=0;i<vex;i++)
+   adjMatrix[i]=new int[vex];
+ for(int i=0;i<vex;i++)
+  for(int j=0;j<vex;j++)
+   adjMatrix[i][j]=0;
+}
+
+Graph::~Graph()
+{
+ delete [] v;
+ delete [] visited;
+ delete [] adjMatrix;
+}
+
+void Graph::displaymat()
+{
+ for(int i=0;i<vertexno;i++)
+ {
+  for(int j=0;j<vertexno;j++)
+   cout<<adjMatrix[i][j]<<"\t";
+  cout<<endl;
+ }
+}
+void Graph::addedge(int v,int w)
+{
+ adjMatrix[v][w]=1;
+ adjMatrix[w][v]=1;
+}
+  
+bash-3.2$ cat graph[K[K[K[K[Kapp.cpp
+#include"graph.h"
+main()
+{
+ int v,e,j,opt;
+ cout<<"------------Option------------"<<endl;
+ cout<<"\t\t1]Graph\n\t\t2]Exit\n";
+ cout<<"------------ End----------------"<<endl;
+ cout<<"Enter your option";
+ cin>>opt;
+   int a,b;
+   cout<<"Enter the number of vertices\t";
+   cin>>v;
+   cout<<"Enter the no of edges\t";
+   cin>>e;
+   Graph g(v,e);
+   for(int i=0;i<v;i++)
+   {
+    g.getdata(i);
+   }
+   for(int i=0;i<e;i++)
+   {
+    cout<<"Enter vertex and corresponding edge:\t"<<endl;
+    cin>>a; cin>>b;
+    g.addedge(a,b);
+   }
+   g.displaymat();
+   try{
+    cout<<"Enter the vertex you want to traverse from\t";
+    cin>>j;
+    if(j<=v)
+     g.dfs(j);
+    else 
+     throw 2;
+    }
+    catch(int)
+    {
+     cout<<"Enter a vertex in the graph"<<endl;
+    }
+}
+void Graph::display(int i)
+{
+ cout<<"----------Details-----------"<<endl;
+ cout<<"Account Number:\t"<<v[i].acc_no << endl;
+ cout<<"Customer Name:\t"<<v[i].customer_name<<endl;
+ cout<<"Balance:"<<v[i].balance<<endl;
+ cout<<"---------End----------------"<<endl;
+}
+void Graph::getdata(int i)
+{
+  cout<<"--Enter the Details--"<<endl;
+  cout<<"Account Number:\t";
+  cin>>v[i].acc_no;
+  cout<<"Customer Name:\t";
+  cin>>v[i].customer_name;
+  cout<<"Balance:\t";
+  cin>>v[i].balance;
+}
+
+bash-3.2$ graph
+------------Option------------
+		1]Graph
+		2]Exit
+------------ End----------------
+Enter your option1
+Enter the number of vertices	2
+Enter the no of edges	2
+Hey
+--Enter the Details--
+Account Number:	1
+Customer Name:	1
+Balance:	1
+--Enter the Details--
+Account Number:	2
+Customer Name:	2
+Balance:	2
+Enter vertex and corresponding edge:	
+1 0
+Enter vertex and corresponding edge:	
+0 1
+0	1	
+1	0	
+Enter the vertex you want to traverse from	1
+----------Details-----------
+Account Number:	2
+Customer Name:	2
+Balance:2
+---------End----------------
+----------Details-----------
+Account Number:	1
+Customer Name:	1
+Balance:1
+---------End----------------
+bash-3.2$ exit
+exit
+
+Script done on Fri 11 Nov 2016 12:41:39 PM IST

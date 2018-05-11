@@ -1,0 +1,268 @@
+Script started on Mon 03 Oct 2016 01:57:35 PM IST
+bash-3.2$ ls
+Cqueue_app.cpp	Cqueue_app.o  Cqueue.exe  Cqueue.h  Cqueue_imp.cpp  Cqueue_imp.o  ex3a.prn  makefile
+bash-3.2$ cat Cqueue.h
+#include<iostream>
+using namespace std;
+class CQueue
+{
+   int *Array;
+   int size;
+   int rear;
+   int front;
+  public:
+   CQueue(int s);
+   void enqueue(int ele);
+   int dequeue();
+   void traverse();
+   bool IsFull();
+   bool IsEmpty();
+   bool check();
+};
+bash-3.2$ cat Cqueue_app.cpp
+#include"Cqueue.h"
+main()
+{
+  int choice;
+  int size;
+  int ele;
+  cout << "Enter The Size Of Queue" << endl;
+  cin >> size;
+  CQueue Q(size);
+  do
+  {
+    try
+    {
+      cout << "1.Enqueue\n2.Dequeue\n3.Traverse" << endl;
+      cout << "4.Exit\n\nEnter Your Option" << endl;
+      cin >> choice;
+      if(choice<1||choice>4)
+         throw 1;
+      else
+        switch(choice)
+        {
+          case 1:
+                 try
+                 {
+                   if(!Q.IsFull())
+                   {
+                     cout << "Enter The Element To Be Enqueue" << endl;
+                     cin >> ele;
+                     Q.enqueue(ele);
+                     cout << "Enqueued Element:\t" << ele << endl;
+                   }
+                   else
+                     throw 2;
+                 }
+                 catch(int ele)
+                 {
+                   cerr << "Queue Is Full" << endl;
+                 }
+                 break;
+          case 2:
+                 try
+                 {
+                   if(!Q.IsEmpty())
+                   {
+                     ele = Q.dequeue();
+                     cout << "Dequeued Element:\t" << ele << endl;
+                   }
+                   else
+                     throw 3;
+                 }
+                 catch(int ele)
+                 {
+                   cerr << "Queue is Empty" << endl;
+                 }
+                 break;
+          case 3:
+                 try
+                 {
+                   if(!Q.IsEmpty())
+                     Q.traverse();
+                   else
+                     throw 4;
+                 }
+                 catch(int ele)
+                 {
+                   cerr << "Queue Is Empty" << endl;
+                 }
+                 break;
+          case 4:
+                 cout << "Exit" << endl;
+                 break;
+        }
+    }
+    catch(int ele)
+    {
+      cerr << "Enter Valid Option" << endl;
+    }
+  }while(choice!=4);
+
+}
+bash-3.2$ cat cqueue_imp.cpp
+#include"Cqueue.h"
+CQueue::CQueue(int s)
+{
+  size = s;
+  rear = -1;
+  front = -1;
+  Array = new int[size];
+}
+void CQueue::enqueue(int ele)
+{
+	/*if(front==-1)
+	{
+		front=0;
+		rear=0;
+	}*/
+  if(rear==size-1)
+    rear = -1;
+	//else
+		//rear++;
+  Array[++rear] = ele;
+}
+int CQueue::dequeue()
+{
+  int data;
+  if(front==size-1)
+     front = -1;
+  data = Array[++front];
+  if(front==rear)
+  {
+    rear = -1;
+    front = -1;
+  }
+  return data;
+}
+void CQueue::traverse()
+{
+  if(front<rear)
+    for(int i=front;i<rear;)
+       cout << "\t" << Array[++i];
+  else
+  {
+    for(int i=front;i<size-1;)
+       cout << "\t" << Array[++i];
+    for(int i=-1;i<rear;)
+       cout << "\t" << Array[++i];
+  }
+  cout << endl;
+}
+bool CQueue::IsFull()
+{
+  if((rear==-1)&&(front==-1))
+    return false;
+  else if(((rear==size-1)&&(front==-1))||(front==rear))
+    return true;
+  else
+    return false;
+}
+bool CQueue::IsEmpty()
+{
+  if((rear==-1)&&(front==-1))
+    return true;
+  else
+    return false;
+}
+bash-3.2$ ls
+Cqueue_app.cpp	Cqueue_app.o  Cqueue.exe  Cqueue.h  Cqueue_imp.cpp  Cqueue_imp.o  ex3a.prn  makefile
+bash-3.2$ Cqueue.exe 
+Enter The Size Of Queue
+2
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+1
+Enter The Element To Be Enqueue
+12
+Enqueued Element:	12
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+1
+Enter The Element To Be Enqueue
+3
+Enqueued Element:	3
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+3
+	12	3
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+1
+Queue Is Full
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+21
+Enter Valid Option
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+1
+Queue Is Full
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+2
+Dequeued Element:	12
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+2
+Dequeued Element:	3
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+2
+Queue is Empty
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+3
+Queue Is Empty
+1.Enqueue
+2.Dequeue
+3.Traverse
+4.Exit
+
+Enter Your Option
+4
+Exit
+bash-3.2$ exit
+exit
+
+Script done on Mon 03 Oct 2016 01:59:25 PM IST

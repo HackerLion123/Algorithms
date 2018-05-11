@@ -1,0 +1,494 @@
+Script started on Mon 31 Oct 2016 04:28:16 PM IST
+bash-3.2$ cat btree.h
+#include<iostream>
+using namespace std;
+struct node
+{
+  int Accno;
+  string  cust_name;
+  node *left;
+  node *right;
+};
+class CTree
+{
+  private:
+    node *root;
+  public:
+    CTree(); 
+    node* insert (int,string,node*);
+    node* search (int,node*);
+    node* findMin(node*);
+    node* findMax(node*);
+    node* deletion(int,node*);
+    void inorder (node*);
+    void postorder (node*);
+    void preorder (node*);
+    node* getRoot();
+    node* makeEmpty(node*);
+    void setRoot(node*);
+};
+bash-3.2$ cat btree.cpp
+#include"btree.h"
+CTree::CTree()
+{
+root=NULL;
+}
+
+node* CTree::insert(int x,string com,node* t)
+{
+  if(root==NULL)
+  {
+    t=new node;
+    t->Accno=x;
+    t->cust_name=com;
+    t->left=NULL;
+    t->right=NULL;
+    root++;
+  }
+  else if(x<t->Accno)
+    t->left=insert(x,com,t->left);
+  else if(x>t->Accno)
+    t->right=insert(x,com,t->right);
+  else
+    return t;
+  return t;
+}
+node* CTree::search(int x,node *root)
+{
+  if(t==NULL)
+    return NULL;
+  if(x<t->Accno)
+    return (search(x,t->left));
+  else if(x>t->Accno)
+    return (search(x,t->right));
+  return t;
+}
+node* CTree::findMin(node *t)
+{
+  while(t->left!=NULL)
+    t=t->left;
+  return t;
+}
+node* CTree::findMax(node *t)
+{
+  while(root->right!=NULL)
+    root=root->right;
+  return root;
+}
+node* CTree::deletion(int x,node* t)
+{
+  node *temp;
+  temp=NULL;
+  if(root==NULL)
+    return NULL;
+  else
+  {
+    if(x<root->Accno)
+      root->left=deletion(x,root->left);
+    else if(x>t->Accno)
+      root->right=deletion(x,root->right);
+    else
+    {
+      if(t->right!=NULL&&t->left!=NULL)
+      {
+        temp=findMin(t->right);
+        t->Accno=temp->Accno;
+        t->cust_name=temp->cust_name;
+        t->right=deletion(t->Accno,t->right);
+      }
+      else
+      {
+        temp=t;
+        if(t->left==NULL)
+          t=t->right;
+        else
+          t=t->left;
+        delete temp;
+      }
+    }
+  }
+  return t;
+}
+void CTree::inorder(node* cnode)
+{
+  if(cnode)
+  {
+    inorder(cnode->left);
+    cout<<"Account number:\t"<<cnode->Accno<< endl;;
+    cout<<"Customer name:\t"<<cnode->cust_name<<endl;
+    inorder(cnode->right);
+  }
+}
+void CTree::postorder(node *root)
+{
+  if(root)
+  {
+    postorder(root->left);
+    postorder(root->right);
+    cout<<"Account number:\t"<<root->Accno<< endl;;
+    cout<<"Customer name:\t"<<root->cust_name<<endl;
+ }
+}
+void CTree::preorder(node *cnode)
+{
+  if(cnode)
+  {
+    cout<<"Account number:\t"<<cnode->Accno<< endl;;
+    cout<<"customer name:\t"<<cnode->cust_name<<endl;
+    preorder(cnode->left);
+    preorder(cnode->right);
+  }
+}
+
+node* CTree::makeEmpty(node* t)
+{
+  if(t!=NULL)
+  {
+    makeEmpty(t->left);
+    makeEmpty(t->right);
+    delete t;
+  }
+}
+bash-3.2$ cat btreeApp.cpp
+#include"btree.h"
+int main()
+{
+  int opt,x;
+  string com;
+  node* droot;
+  droot=new node;
+  CTree t;
+  droot=t.getRoot();
+  do
+  {
+ cout<<"\t\t-----BINARY TREE--------\n";
+    cout<<"\t ---options---\n";
+    cout<<"\t1-Insert\n\t2-Search\n\t3-Find minimum\n";
+    cout<<"\t4-Find maximum\n\t5-Print inorder\n";
+    cout<<"\t6-postorder\n\t7-preorder\n\t8-Deletion\n\t9-make Empty\n\t10-exit\n";
+    cout<<"Enter the option :";
+    cin>>opt;
+    switch(opt)
+    {
+      case 1:
+      {
+        node *cur=new node;
+        do
+        {
+          try
+          {
+            cout << "Enter the Account Number:\t";
+            cin >> x;
+            if(x==0)
+               throw 1;
+          }
+          catch(int ele)
+          {
+            cerr << "Error: Accno cant be Null" << endl;
+          }
+        }
+        while(x<1);
+        cout<<"Customer Name:\t";
+        cin>>com;
+        cout << endl;  
+        cur=t.search(x,droot);
+        if(cur==NULL)
+        {
+          droot=t.insert(x,com,droot);
+          cout<<"Node is inserted\n";
+        }
+        else
+          cout<<"Already presnt\n";
+          t.setRoot(droot);
+       }
+       break;
+      case 2:
+      {
+				node *cur1=new node;
+        cout<<"Enter your account number:\t";
+        cin>>x;
+        cout << endl;
+        cur1=t.search(x,droot);
+        if(cur1!=NULL)
+        {
+             cout<<"Account Number:\t"<<cur1->Accno<< endl;;
+             cout<<"Customer name:\t"<<cur1->cust_name<<endl;
+        }
+        else
+          cout<<"Element not found\n";
+        t.setRoot(droot);
+        break;
+      }
+	    case 3:
+	    {
+	      node *cur2=new node;
+        if(droot!=NULL)
+        {
+          cur2=t.findMin(droot);
+          if(cur2!=NULL)
+          {
+             cout<<"Account number:\t"<<cur2->Accno << endl;;
+             cout<<"Customer Name:\t"<<cur2->cust_name<<endl;
+          }
+        }
+  		  else
+		      cout<<"Empty tree...\n";
+	      break;
+	    }
+	    case 4:
+  	  {
+	  	  node *cur3=new node;
+        if(droot!=NULL)
+        {
+          cur3=t.findMax(droot);
+           if(cur3!=NULL)
+           {
+             cout<<"Account number:\t"<<cur3->Accno << endl;;
+             cout<<"Customer name:\t"<<cur3->cust_name<<endl;
+           }
+        }
+     	  else
+	         cout<<"Empty tree...\n";
+	      break;
+	    }
+	    case 5:
+        if(droot!=NULL)
+	      {
+		      cout<<"Binary tree in inorder is:\n";
+		      t.inorder(droot);
+        }
+        else
+          cout<<"Empty tree....\n";
+		    break;
+	    case 6:
+        if(droot!=NULL)
+	      {
+  		    cout<<"Binary tree in Postorder is--\n";
+	  	    t.postorder(droot);
+        }
+        else
+          cout<<"Empty tree.....\n";
+		    break;
+	    case 7:
+        if(droot!=NULL)
+	      {
+	    	  cout<<"Binary tree in Preorder is--\n";
+		      t.preorder(droot);
+        }
+        else
+          cout<<"Empty tree.....\n";
+		    break;
+	    case 8:
+      {
+        node* cur4=new node;
+        cout<<"Enter BookingID:\t";
+	      cin>>x;
+        cout << endl;
+        cur4=t.search(x,droot);
+        if(cur4!=NULL)
+        {
+          droot=t.deletion(x,droot);
+	        cout<<"Element is deleted\n";
+        }
+        else
+          cout<<"Element not present\n";
+      }
+        break;
+      case 9:
+        droot=t.makeEmpty(droot);
+        if(droot==NULL)
+          cout<<"Tree made empty\n";
+        t.setRoot(droot);
+        break;
+	    case 10:
+	      cout<<"Exit......\n";
+		    break;
+	    default:
+	      cout<<"Invalid option !!!\n";
+		    break;
+	  }
+  }while(opt!=10);
+}
+bash-3.2$ btree.exe
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :1
+Enter the Account Number:	12323
+Customer Name:	ewds
+
+Node is inserted
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :1
+Enter the Account Number:	12323
+Customer Name:	baha
+
+Node is inserted
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :2
+Enter your account number:	12323
+
+Account Number:	12323
+Customer name:	baha
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :3
+Account number:	1232
+Customer Name:	ewds
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :4
+Account number:	12323
+Customer name:	baha
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :5
+Binary tree in inorder is:
+Account number:	1232
+Customer name:	ewds
+Account number:	12323
+Customer name:	baha
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :6
+Binary tree in Postorder is--
+Account number:	12323
+Customer name:	baha
+Account number:	1232
+Customer name:	ewds
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :7
+Binary tree in Preorder is--
+Account number:	1232
+customer name:	ewds
+Account number:	12323
+customer name:	baha
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :8
+Enter BookingID:	1232
+
+Element is deleted
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :9
+		-----BINARY TREE--------
+	 ---options---
+	1-Insert
+	2-Search
+	3-Find minimum
+	4-Find maximum
+	5-Print inorder
+	6-postorder
+	7-preorder
+	8-Deletion
+	9-make Empty
+	10-exit
+Enter the option :10
+Exit......
+bash-3.2$ exit
+exit
+
+Script done on Mon 31 Oct 2016 04:29:54 PM IST

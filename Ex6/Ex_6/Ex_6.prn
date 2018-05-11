@@ -1,0 +1,420 @@
+Script started on Thu 27 Oct 2016 03:05:54 PM IST
+bash-3.2$ cat heap.h
+#include<iostream>
+using namespace std;
+#include<string>
+typedef struct Info
+{
+        int ram,id,hdd;
+        string brand;
+        string processor;
+        float price;
+}Info;
+class BinHeap
+{
+        private:
+                Info *heap;
+                int capacity;
+                int hsize;
+        public:
+                void printData(Info info);
+                Info getData();
+                int enqueue(Info i);
+                int dequeue();
+                Info front();
+                int rear();
+                BinHeap(){}
+                BinHeap(int,int);
+                ~BinHeap(){delete[] heap;}
+                int isFull();
+                int isEmpty();
+                void inOrder(int current);
+                Info getRoot();
+};
+
+bash-3.2$ cat heap.cpp
+#include"heap.h"
+BinHeap::BinHeap(int cap,int x)
+{
+        capacity=cap;
+        hsize=0;
+        heap=new Info[capacity+1];
+}
+int BinHeap::enqueue(Info i)
+{
+        int current;
+        if(hsize==capacity)
+                return -1;
+        else
+        {
+                current=++hsize;
+                for(;current>1 && i.id<heap[current/2].id;current/=2)
+                        heap[current]=heap[current/2];
+        }
+        heap[current]=i;
+
+        return 1;
+}
+Info BinHeap::front()
+{
+        return heap[hsize];
+}
+int BinHeap::isFull()
+{
+        return (hsize==capacity);
+}
+int BinHeap::isEmpty()
+{
+        return (hsize==0);
+}
+int BinHeap::dequeue()
+{
+        if(isEmpty())
+                return -1;
+        Info lastE=heap[hsize];
+				--hsize;
+        int current=1;
+        Info j=heap[current];
+        int child=2;
+	 while(current<=hsize)
+        {
+                if(child<hsize && heap[child].id>heap[child+1].id)
+                        child++;
+                if(lastE.id<=heap[child].id)
+                        break;
+                heap[current]=heap[child];
+                current=child;
+                child*=2;
+        }
+        printData(j);
+        heap[current]=lastE;
+}
+
+void BinHeap::printData(Info info)
+{
+  cout<<"--------------Display----------------------\n";
+  cout<<"Computers details:"<<endl;
+  cout<<"\tID \t\t\t:\t";
+  cout<<info.id<<endl;
+  cout<<"\tBrand\t\t\t:\t";
+  cout<<info.brand<<endl;
+  cout<<"\tProcessor\t\t:\t";
+  cout<<info.processor<<endl;
+  cout<<"\tRAM\t\t\t:\t";
+  cout<<info.ram<<"GB"<<endl;
+  cout<<"\tPrice\t\t\t:\t";
+  cout<<info.price<<"Rupees"<<endl;
+  cout<<"------------------End------------------------\n";
+}
+
+Info BinHeap::getData()
+{
+  cout<<"******************Enter Details*********************"<<endl;
+  Info info;
+  cout<<"Enter the id :\n";
+  cin>>info.id;
+  cout<<"Enter the computer brand"<<endl;
+  cin>>info.brand;
+  cout<<"Enter the procesor:\n";
+  cin>>info.processor;
+  cout<<"Enter the computer RAM:\n";
+  cin>>info.ram;
+  cout<<"Enter the computer price:\n";
+  cin>>info.price;
+  return info;
+  cout<<"************************End**********************"<<endl;
+}
+
+void BinHeap::inOrder(int current=1)
+{
+	if(isEmpty())
+	printData(heap[current]);
+	else
+			cout<<"Heap is Empty !\n";
+
+}
+Info BinHeap::getRoot()
+{
+return heap[1];
+}
+
+
+bash-3.2$ cat heapApp.cpp
+#include"heap.h"
+int main()
+{       int opt;
+        int cap;
+        int x=0;
+        cout<<"Enter capacity\n";
+        cin>>cap;
+        BinHeap b(cap,x);
+        Info i;
+        do
+				{
+				cout<<"*************select your option:***************\n\n";
+                cout<<"1.Insert computer details\n";
+                cout<<"2.Deletion\n";
+                cout<<"3.return Front\n";
+                cout<<"4.Exit\n";
+                
+                cin>>opt;
+                switch(opt)
+                {
+                case 1:
+                {
+                        int j;
+                        i=b.getData();
+                        j=b.enqueue(i);
+                        if(j==-1)
+                                cout<<"\nHeap is full !\n";
+                        else
+                                cout<<"\nInsertion success\n";
+                        break;
+                }
+                case 2:
+                {
+                        int j;
+                        j=b.dequeue();
+                        if(j==-1)
+                                cout<<"\nHeap is empty\n\n";
+                        break;
+                }
+		 case 3:
+                {
+                        int x=1;
+                        cout<<"\nThe  details of computers:\n\n";
+                        b.inOrder(x);
+                        break;
+                }
+                case 4:
+                        cout<<"Thank You\n";
+                        break;
+                default:
+                        cout<<"Invalid option\n\n";
+                }
+        }while(opt!=4);
+return 1;
+}
+
+bash-3.2$ cat makefile
+heap.exe:heap.o heapApp.o
+	g++ heap.o heapApp.o -o heap.exe
+heap.o:heap.cpp
+	g++ heap.cpp -c
+heapApp.o:heapApp.cpp
+	g++ heapApp.cpp -c
+
+bash-3.2$ ./heap
+bash: ./heap: No such file or directory
+bash-3.2$ ./heap.exe
+Enter capacity
+3
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+1
+******************Enter Details*********************
+Enter the id :
+3
+Enter the computer brand
+apple
+Enter the procesor:
+i7
+Enter the computer RAM:
+16
+Enter the computer price:
+123000
+
+Insertion success
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+1
+******************Enter Details*********************
+Enter the id :
+2
+Enter the computer brand
+HP
+Enter the procesor:
+i5
+Enter the computer RAM:
+4
+Enter the computer price:
+60000
+
+Insertion success
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+1
+******************Enter Details*********************
+Enter the id :
+1
+Enter the computer brand
+Dell
+Enter the procesor:
+i5
+Enter the computer RAM:
+8
+Enter the computer price:
+75000
+
+Insertion success
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+3
+
+The  details of computers:
+
+--------------Display----------------------
+Computers details:
+	ID 			:	1
+	Brand			:	Dell
+	Processor		:	i5
+	RAM			:	8GB
+	Price			:	75000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+2
+--------------Display----------------------
+Computers details:
+	ID 			:	1
+	Brand			:	Dell
+	Processor		:	i5
+	RAM			:	8GB
+	Price			:	75000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+3
+
+The  details of computers:
+
+--------------Display----------------------
+Computers details:
+	ID 			:	2
+	Brand			:	HP
+	Processor		:	i5
+	RAM			:	4GB
+	Price			:	60000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+2
+--------------Display----------------------
+Computers details:
+	ID 			:	2
+	Brand			:	HP
+	Processor		:	i5
+	RAM			:	4GB
+	Price			:	60000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+3
+
+The  details of computers:
+
+--------------Display----------------------
+Computers details:
+	ID 			:	3
+	Brand			:	apple
+	Processor		:	i7
+	RAM			:	16GB
+	Price			:	123000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+2
+--------------Display----------------------
+Computers details:
+	ID 			:	3
+	Brand			:	apple
+	Processor		:	i7
+	RAM			:	16GB
+	Price			:	123000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+3
+
+The  details of computers:
+
+--------------Display----------------------
+Computers details:
+	ID 			:	3
+	Brand			:	apple
+	Processor		:	i7
+	RAM			:	16GB
+	Price			:	123000Rupees
+------------------End------------------------
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+2
+
+Heap is empty
+
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+3
+
+Heap is Empty
+
+*************select your option:***************
+
+1.Insert computer details
+2.Deletion
+3.return Front
+4.Exit
+4
+Thank You
+bash-3.2$ exit
+exit
+
+Script done on Thu 27 Oct 2016 03:08:22 PM IST

@@ -1,0 +1,284 @@
+Script started on Mon 03 Oct 2016 04:01:09 PM IST
+bash-3.2$ ls
+ex3b.prn  Lqueue_app.cpp  Lqueue_app.o	Lqueue.exe  Lqueue.h  Lqueue_imp.cpp  Lqueue_imp.o  makefile
+bash-3.2$ cat Lqueue.h
+#include<iostream>
+using namespace std;
+class list 
+{
+    class node
+
+  {
+    public:
+      int cid,price;
+      string name;
+      node *next;
+      void dis();
+  };
+  node *head;
+  int size;
+  int rear;
+  int front;
+ public:
+   list(int s);
+   void enqueue(int id,int price,string nam);
+   void dequeue();
+   void traverse();
+   bool IsFull();
+   bool IsEmpty();
+};
+bash-3.2$ cat Lqueue_imp.cpp
+#include"Lqueue.h"
+list::list(int s)
+{
+  head = new node();
+  head->next = NULL;
+  size = s;
+  rear = -1;
+  front = -1;
+}
+void list::enqueue(int id,int pr,string nam)
+{
+  node *temp;
+  node *newnode;
+  newnode = new node();
+  newnode->cid = id;
+  newnode->price = pr;
+  newnode->name = nam;
+  if(rear==size-1)
+     rear = -1;
+  temp = head;
+  while(temp->next!=NULL)
+     temp = temp->next;
+  temp->next = newnode;
+  newnode->next = NULL;
+  ++rear;
+}
+void list::dequeue()
+{
+  if(front==size-1)
+     front = -1;
+  node *temp;
+  temp = head->next;
+  head->next = temp->next;
+  temp->dis();
+  delete temp;
+  ++front;
+  if(front==rear)
+  {
+    rear = -1;
+    front = -1;
+  }
+}
+void list::traverse()
+{
+  node *temp;
+  temp = head->next;
+  while(temp!=NULL)
+  {
+    temp->dis();
+    temp =temp->next;
+  }
+}
+void list::node::dis()
+{
+  cout << "staffid:\t" << cid << endl;
+  cout << "age:\t" << price << endl;
+  cout << "Name:\t" << name << endl;
+}
+bool list::IsFull()
+{
+  if((rear==-1)&&(front==-1))
+    return false;
+  else if(((rear==size-1)&&(front==-1))||(front==rear))
+    return true;
+  else
+    return false;
+}
+bool list::IsEmpty()
+{
+  if((rear==-1)&&(front==-1))
+    return true;
+  else
+    return false;
+}
+bash-3.2$ cat Lqueue_app.cpp
+#include"Lqueue.h"
+main()
+{
+  int choice;
+  int size;
+  int id,pr;
+  string name;
+  cout << "Enter The Size" << endl;
+  cin >> size;
+  list Q(size);
+  do
+  {
+   try
+   {
+     cout << "1.Enqueue\n2.Dequeue\n3.Display" << endl;
+     cout << "4.Exit\n\nEnter Your Option" << endl;
+     cin >> choice;
+     if(choice<1||choice>4)
+       throw 1;
+     else
+       switch(choice)
+       {
+         case 1:
+                try
+                {
+                  if(!Q.IsFull()||Q.IsEmpty())
+                  {
+                    do
+                    {
+                      try
+                      {
+                        cout << "staffid:\t";
+                        cin >> id;
+                        cout << endl;
+                        if(id<1)
+                          throw 2;
+                      }
+                      catch(int ele)
+                      {
+                        cerr << "staff Should Be > O" << endl;
+                      }
+                    }while(id<0);
+                    cout<<"Enter the age:\t";
+                    cin>>pr;
+                    cout << "Enter the Name:\t";
+                    cin >> name;
+                    cout << endl;
+                    Q.enqueue(id,pr,name);
+                    cout << "Successfully Enqueued In The Queue" << endl;
+                  }
+                  else
+                    throw 4;
+                }
+               catch(int ele)
+               {
+                 cerr << "Queue Is Full" << endl;
+               }
+               break;
+         case 2:
+                try
+                {
+                  if(!Q.IsEmpty())
+                  {
+                    Q.dequeue();
+                  }
+                  else
+                    throw 3;
+                }
+                catch(int ele)
+                {
+                  cerr << "Queue is Empty" << endl;
+                }
+                break;
+         case 3:
+                try
+                {
+                  if(!Q.IsEmpty())
+                    Q.traverse();
+                  else
+                    throw 4;
+                }
+                catch(int ele)
+                {
+                  cerr << "Queue Is Empty" << endl;
+                }
+                break;
+         case 4:
+                cout << "Exit" << endl;
+                break;
+       }
+   }
+   catch(int ele)
+   {
+     cerr << "Enter Valid Option" << endl;
+   }
+  }while(choice!=4);
+}
+bash-3.2$ ls
+ex3b.prn  Lqueue_app.cpp  Lqueue_app.o	Lqueue.exe  Lqueue.h  Lqueue_imp.cpp  Lqueue_imp.o  makefile
+bash-3.2$ Lqueue.exe 
+Enter The Size
+1
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+1
+staffid:	21
+
+Enter the age:	23
+Enter the Name:	w
+
+Successfully Enqueued In The Queue
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+1
+Queue Is Full
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+3
+staffid:	21
+age:	23
+Name:	w
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+2
+staffid:	21
+age:	23
+Name:	w
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+2
+Queue is Empty
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+2
+Queue is Empty
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+3
+Queue Is Empty
+1.Enqueue
+2.Dequeue
+3.Display
+4.Exit
+
+Enter Your Option
+4
+Exit
+bash-3.2$ exit
+exit
+
+Script done on Mon 03 Oct 2016 04:02:25 PM IST

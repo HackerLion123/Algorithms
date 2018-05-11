@@ -1,0 +1,261 @@
+Script started on Mon 19 Sep 2016 04:24:25 PM IST
+bash-3.2$ cat CStack.h
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+class CStack
+{
+	private:
+	 int *s;
+	 int size;
+	 int top;
+	public:
+	 CStack(int);
+     bool isFull();
+     bool isEmpty();
+	 bool Push(int);
+	 int Pop();
+	 void Display();
+};
+
+bash-3.2$ ls
+CStack	CStackapp.cpp  CStack.cpp  CStack.h  CStack.o  ex2b.prn  makefile  stack
+bash-3.2$ cat CStackapp.cpp
+#include"CStack.h"
+main()
+{
+int i,choice,size,element;
+cout<<"Enter the size of stack :"<<endl;
+cin>>size;
+CStack S(size);
+do
+{
+cout<<endl<<"\t1 - Push an element"<<endl;
+cout<<"\t2 - Pop a element"<<endl;
+cout<<"\t3 - Show the stack"<<endl;
+cout<<"\t4 - Exit"<<endl;
+cout<<"\tEnter the choice"<<endl;
+cin>>choice;
+switch(choice)
+{
+case 1:
+ cout<<"Enter an element to push"<<endl;
+ cin>>element;
+  if(S.Push(element))
+  {
+      cout<<" The element "<<element<<" is pushed into the stack"<<endl;
+  }
+  else
+  {
+      cout<<"Stack is FULL"<<endl;
+  }
+ break;
+case 2:
+ element=S.Pop();
+ if(element!=-1)
+  cout<<"\tPoped element is "<<element;
+ else
+  cout<<"Stack is EMPTY"<<endl;
+ break;
+case 3:
+  S.Display();
+ break;
+case 4:
+ exit(0);
+}
+}
+while(choice>0&&choice<5);
+}
+
+bash-3.2$ ls
+CStack	CStackapp.cpp  CStack.cpp  CStack.h  CStack.o  ex2b.prn  makefile  stack
+bash-3.2$ cat CStack.cpp
+#include"CStack.h"
+CStack::CStack(int max)
+{
+ s=new int[max];
+ top=-1;
+ size=max;
+}
+bool CStack::Push(int element)
+{
+ if(isFull())
+ {
+  return false;
+ }
+ else
+ {
+  s[++top]=element;
+  Display();
+  return true;
+ }
+}
+int CStack::Pop()
+{
+ 	if(isEmpty())
+	{
+        return -1;
+	}
+	else
+	{
+        return s[top--];
+	}
+}
+bool CStack::isFull()
+{
+	if(top<size-1)
+	{
+        return false;
+	}
+	else
+	{
+        return true;
+	}
+}
+bool CStack::isEmpty()
+{
+	if(top>=0)
+	{
+        return false;
+	}
+	else
+	{
+        return true;
+	}
+}
+void CStack::Display()
+{
+	if(isEmpty())
+	{
+	 cout<<"Stack is EMPTY"<<endl;
+	}
+	else
+	{
+	 cout<<"size of the stack is "<<size<<endl;
+	 cout<<"Top is "<<top<<" now"<<endl;
+	 for(int i=0;i<=top;i++)
+	 {
+	  cout<<"\t"<<s[i];
+	 }
+	 cout<<endl;
+    }
+}
+
+bash-3.2$ stack
+Enter the size of stack :
+3
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+1
+Enter an element to push
+21
+size of the stack is 3
+Top is 0 now
+	21
+ The element 21 is pushed into the stack
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+1
+Enter an element to push
+12
+size of the stack is 3
+Top is 1 now
+	21	12
+ The element 12 is pushed into the stack
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+1
+Enter an element to push
+32
+size of the stack is 3
+Top is 2 now
+	21	12	32
+ The element 32 is pushed into the stack
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+1
+Enter an element to push
+23
+Stack is FULL
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+1
+Enter an element to push
+21
+Stack is FULL
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+2
+	Poped element is 32
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+2
+	Poped element is 12
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+2
+	Poped element is 21
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+2
+Stack is EMPTY
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+2
+Stack is EMPTY
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+3
+Stack is EMPTY
+
+	1 - Push an element
+	2 - Pop a element
+	3 - Show the stack
+	4 - Exit
+	Enter the choice
+4
+bash-3.2$ exit
+exit
+
+Script done on Mon 19 Sep 2016 04:25:34 PM IST
